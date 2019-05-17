@@ -12,7 +12,7 @@ Installation
    git clone https://github.com/dmillard/eigengdb
    cd eigengdb
    python setup.py install # Make sure to use system python (which matches the GDB python version)
-   echo -e "python\n__import__('eigengdb').register_eigen_printers()\nend" >> $HOME/.gdbinit
+   echo -e "python\n__import__('eigengdb').register_eigen_printers(None)\nend" >> $HOME/.gdbinit
 
 License
 -------
