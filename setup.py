@@ -4,7 +4,7 @@ setup(
     name='eigengdb',
     version='1.0',
     packages=find_packages(),
-    scripts=['bin/register_eigengdb'],
+    scripts=['bin/eigengdb_register_printers'],
     install_requires=['numpy'],
     author="David Millard",
     author_email="dmillard@usc.edu",
