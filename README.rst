@@ -35,7 +35,7 @@ Installation
 ------------
 
 It is important to use the python/pip version which corresponds to your GDB
-installation. You can find out more information using the `python` command in
+installation. You can find out more information using the :code:`python` command in
 GDB. For example, from GDB repl, you can find where GDB python will search for
 packages.
 
@@ -71,7 +71,7 @@ From Source
 Test
 ----
 
-There is an example program you can play with in the `examples/` directory.
+There is an example program you can play with in the :code:`examples/` directory.
 
 .. code-block:: bash
 
