@@ -2,7 +2,7 @@ eigengdb
 ========
 
 This is a pretty printer for eigen types (with some support for stan-math
-types), forked from upstream eigen.
+types). Much of the logic comes from upstream eigen.
 
 Motivation
 ----------
