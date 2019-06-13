@@ -16,4 +16,7 @@ setup(
     project_urls={
         "Source Code": "https://github.com/dmillard/eigengdb",
         "Bug Tracker": "https://github.com/dmillard/eigengdb/issues",
-    })
+    },
+    install_requires=[
+        'numpy',
+    ])
