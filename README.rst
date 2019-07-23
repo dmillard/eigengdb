@@ -3,7 +3,7 @@ eigengdb
 
 This is a pretty printer for eigen types (with some support for stan-math
 types). Much of the logic comes from upstream eigen. Formatting is handled
-`numpy`.
+by `numpy`.
 
 Motivation
 ----------
