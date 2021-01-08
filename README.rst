@@ -82,9 +82,10 @@ There is an example program you can play with in the :code:`examples/` directory
 In the resulting gdb prompt that shows up, add your breakpoint and run the file
 
 .. code-block:: bash
+
    b 7
-   run # it runs until you hit the breakpoint
-   p mat # shows better formatting
+   run # run until breakpoint
+   p mat # shows eigengdb formatting
 
 License
 -------
