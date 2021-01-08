@@ -48,7 +48,14 @@ packages.
    >end
    [..., '/path/to/site-packages', ...]
 
-Then install using a corresponding python/pip (usually system pip).
+In Linux, you can also find the python used by checking the libraries linked to GDB.
+
+.. code-block:: bash
+
+   $ ldd $(which gdb) | grep python
+
+
+Once you find the python interpreter used by GDB, install :code:`eigengdb` using a corresponding python/pip (usually system pip).
 
 
 From Source
@@ -71,6 +78,13 @@ There is an example program you can play with in the :code:`examples/` directory
    cd examples
    make
    make debug
+   
+In the resulting gdb prompt that shows up, add your breakpoint and run the file
+
+.. code-block:: bash
+   b 7
+   run # it runs until you hit the breakpoint
+   p mat # shows better formatting
 
 License
 -------
