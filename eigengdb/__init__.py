@@ -121,8 +121,8 @@ class EigenMatrixPrinter:
 
     class _iterator(_MatrixEntryIterator):
         def __init__(self, rows, cols, dataPtr, rowMajor):
-            super(EigenMatrixPrinter._iterator, self).__init__(
-                rows, cols, rowMajor)
+            super(EigenMatrixPrinter._iterator,
+                  self).__init__(rows, cols, rowMajor)
 
             self.dataPtr = dataPtr
 
@@ -151,6 +151,14 @@ class EigenMatrixPrinter:
                     # Basic stan-math support
                     item['val']
                     eval_string = "(*({}*)({})).val()".format(
+                        item.type, item.address)
+                    item = gdb.parse_and_eval(eval_string)
+                except (gdb.error):
+                    pass
+                try:
+                    # Basic CppAD support
+                    item['value_']
+                    eval_string = "(*({}*)({})).value_".format(
                         item.type, item.address)
                     item = gdb.parse_and_eval(eval_string)
                 except (gdb.error):
@@ -193,8 +201,8 @@ class EigenSparseMatrixPrinter:
 
     class _iterator(_MatrixEntryIterator):
         def __init__(self, rows, cols, val, rowMajor):
-            super(EigenSparseMatrixPrinter._iterator, self).__init__(
-                rows, cols, rowMajor)
+            super(EigenSparseMatrixPrinter._iterator,
+                  self).__init__(rows, cols, rowMajor)
 
             self.val = val
 
@@ -220,9 +228,8 @@ class EigenSparseMatrixPrinter:
             else:
                 # create Python index list from the target range within m_indices
                 indices = [
-                    data['m_indices'][x]
-                    for x in range(int(start),
-                                   int(end) - 1)
+                    data['m_indices'][x] for x in range(int(start),
+                                                        int(end) - 1)
                 ]
                 # find the index with binary search
                 idx = int(start) + bisect_left(indices, inner)
@@ -315,12 +322,11 @@ class EigenQuaternionPrinter:
 def build_eigen_dictionary():
     pretty_printers_dict[re.compile(
         '^Eigen::Quaternion<.*>$')] = lambda val: EigenQuaternionPrinter(val)
-    pretty_printers_dict[
-        re.compile('^Eigen::Matrix<.*>$'
-                   )] = lambda val: EigenMatrixPrinter("Matrix", val)
-    pretty_printers_dict[re.
-                         compile('^Eigen::SparseMatrix<.*>$'
-                                 )] = lambda val: EigenSparseMatrixPrinter(val)
+    pretty_printers_dict[re.compile(
+        '^Eigen::Matrix<.*>$')] = lambda val: EigenMatrixPrinter("Matrix", val)
+    pretty_printers_dict[re.compile(
+        '^Eigen::SparseMatrix<.*>$')] = lambda val: EigenSparseMatrixPrinter(val
+                                                                             )
     pretty_printers_dict[re.compile(
         '^Eigen::Array<.*>$')] = lambda val: EigenMatrixPrinter("Array", val)
 
