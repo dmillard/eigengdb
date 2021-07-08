@@ -16,7 +16,7 @@ def main():
 
     if gdbinit.find(loader) == -1:
         print('Adding printer registration to ' + path)
-        with open(path, 'w+') as f:
+        with open(path, 'a+') as f:
             f.write('# Added by ' + sys.argv[0] + ' on ' +
                     datetime.now().isoformat() + '\n')
             f.write(loader)
