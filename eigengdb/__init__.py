@@ -94,14 +94,18 @@ class EigenMatrixPrinter:
         if template_params[1] == '-0x00000000000000001' or template_params[
                 1] == '-0x000000001' or template_params[1] == '-1':
             self.rows = val['m_storage']['m_rows']
+            self.dynamic_rows = True
         else:
             self.rows = int(template_params[1])
+            self.dynamic_rows = False
 
         if template_params[2] == '-0x00000000000000001' or template_params[
                 2] == '-0x000000001' or template_params[2] == '-1':
             self.cols = val['m_storage']['m_cols']
+            self.dynamic_cols = True
         else:
             self.cols = int(template_params[2])
+            self.dynamic_cols = False
 
         self.options = 0  # default value
         if len(template_params) > 3:
@@ -165,9 +169,7 @@ class EigenMatrixPrinter:
                     pass
                 mat[row, col] = float(item)
 
-        return "Eigen::%s<%s,%d,%d,%s> (data ptr: %s)\n%s\n" % (
-            self.variety, self.innerType, self.rows, self.cols,
-            "RowMajor" if self.rowMajor else "ColMajor", self.data, mat)
+        return f"Eigen::{self.variety}<{self.innerType},{'D' if self.dynamic_rows else ''}{self.rows},{self.cols},{'r' if self.rowMajor else 'c'}maj> (data ptr: {self.data})\n{mat}\n"
 
 
 class EigenSparseMatrixPrinter:
