@@ -143,6 +143,15 @@ class EigenMatrixPrinter:
             return ('[%d,%d]' % (row, col), item)
 
     def to_string(self):
+        # handle uninitialized memory:
+        if self.rows < 0 or self.cols < 0 or self.rows > 1<<30 or self.cols > 1<<30 or self.rows*self.cols > 1<<33:
+            return f"Eigen::{self.variety}<{self.innerType},{'D' if self.dynamic_rows else ''}{':invalid:' if self.rows < 0 else self.rows},{'D' if self.dynamic_cols else ''}{':invalid:' if self.cols < 0 else self.cols},{'r' if self.rowMajor else 'c'}maj> (data ptr: {self.data})\n"
+
+        # let's not allocate more than 8 MiB for our debug printing ndarray...
+        if self.rows > 1<<20 or self.cols > 1<<20 or self.rows*self.cols > 1<<20:
+            return f"Eigen::{self.variety}<{self.innerType},{'D' if self.dynamic_rows else ''}{self.rows},{'D' if self.dynamic_cols else ''}{self.cols},{'r' if self.rowMajor else 'c'}maj> (data ptr: {self.data})\n"
+
+
         mat = np.zeros((self.rows, self.cols), dtype=np.float64)
         for row in range(self.rows):
             for col in range(self.cols):
