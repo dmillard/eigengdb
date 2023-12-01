@@ -86,7 +86,7 @@ class EigenMatrixPrinter:
             type = type.target()
         self.type = type.unqualified().strip_typedefs()
         tag = self.type.tag
-        regex = re.compile('\<.*\>')
+        regex = re.compile(r'\<.*\>')
         m = regex.findall(tag)[0][1:-1]
         template_params = m.split(',')
         template_params = [x.replace(" ", "") for x in template_params]
@@ -94,14 +94,18 @@ class EigenMatrixPrinter:
         if template_params[1] == '-0x00000000000000001' or template_params[
                 1] == '-0x000000001' or template_params[1] == '-1':
             self.rows = val['m_storage']['m_rows']
+            self.dynamic_rows = True
         else:
             self.rows = int(template_params[1])
+            self.dynamic_rows = False
 
         if template_params[2] == '-0x00000000000000001' or template_params[
                 2] == '-0x000000001' or template_params[2] == '-1':
             self.cols = val['m_storage']['m_cols']
+            self.dynamic_cols = True
         else:
             self.cols = int(template_params[2])
+            self.dynamic_cols = False
 
         self.options = 0  # default value
         if len(template_params) > 3:
@@ -139,6 +143,15 @@ class EigenMatrixPrinter:
             return ('[%d,%d]' % (row, col), item)
 
     def to_string(self):
+        # handle uninitialized memory:
+        if self.rows < 0 or self.cols < 0 or self.rows > 1<<30 or self.cols > 1<<30 or self.rows*self.cols > 1<<33:
+            return f"Eigen::{self.variety}<{self.innerType},{'D' if self.dynamic_rows else ''}{':invalid:' if self.rows < 0 else self.rows},{'D' if self.dynamic_cols else ''}{':invalid:' if self.cols < 0 else self.cols},{'r' if self.rowMajor else 'c'}maj> (data ptr: {self.data})\n"
+
+        # let's not allocate more than 8 MiB for our debug printing ndarray...
+        if self.rows > 1<<20 or self.cols > 1<<20 or self.rows*self.cols > 1<<20:
+            return f"Eigen::{self.variety}<{self.innerType},{'D' if self.dynamic_rows else ''}{self.rows},{'D' if self.dynamic_cols else ''}{self.cols},{'r' if self.rowMajor else 'c'}maj> (data ptr: {self.data})\n"
+
+
         mat = np.zeros((self.rows, self.cols), dtype=np.float64)
         for row in range(self.rows):
             for col in range(self.cols):
@@ -165,9 +178,7 @@ class EigenMatrixPrinter:
                     pass
                 mat[row, col] = float(item)
 
-        return "Eigen::%s<%s,%d,%d,%s> (data ptr: %s)\n%s\n" % (
-            self.variety, self.innerType, self.rows, self.cols,
-            "RowMajor" if self.rowMajor else "ColMajor", self.data, mat)
+        return f"Eigen::{self.variety}<{self.innerType},{'D' if self.dynamic_rows else ''}{self.rows},{self.cols},{'r' if self.rowMajor else 'c'}maj> (data ptr: {self.data})\n{mat}\n"
 
 
 class EigenSparseMatrixPrinter:
@@ -181,7 +192,7 @@ class EigenSparseMatrixPrinter:
             type = type.target()
         self.type = type.unqualified().strip_typedefs()
         tag = self.type.tag
-        regex = re.compile('\<.*\>')
+        regex = re.compile(r'\<.*\>')
         m = regex.findall(tag)[0][1:-1]
         template_params = m.split(',')
         template_params = [x.replace(" ", "") for x in template_params]
