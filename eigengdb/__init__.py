@@ -86,7 +86,7 @@ class EigenMatrixPrinter:
             type = type.target()
         self.type = type.unqualified().strip_typedefs()
         tag = self.type.tag
-        regex = re.compile('\<.*\>')
+        regex = re.compile(r'\<.*\>')
         m = regex.findall(tag)[0][1:-1]
         template_params = m.split(',')
         template_params = [x.replace(" ", "") for x in template_params]
@@ -192,7 +192,7 @@ class EigenSparseMatrixPrinter:
             type = type.target()
         self.type = type.unqualified().strip_typedefs()
         tag = self.type.tag
-        regex = re.compile('\<.*\>')
+        regex = re.compile(r'\<.*\>')
         m = regex.findall(tag)[0][1:-1]
         template_params = m.split(',')
         template_params = [x.replace(" ", "") for x in template_params]
